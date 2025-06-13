@@ -54,4 +54,33 @@ export class FormService {
         const updatedForms = forms.filter(form => form.id !== formId);
         localStorage.setItem('forms', JSON.stringify(updatedForms));
     }
+
+    // Buscar formulário específico por ID
+    getFormById(formId: number): any | null {
+        const forms = this.getForms();
+        return forms.find(form => form.id === formId) || null;
+    }
+
+    // Salvar resposta de formulário
+    saveFormResponse(formId: number, responses: any): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
+
+        const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+        submissions.push({
+            formId: formId,
+            responses: responses,
+            submittedAt: new Date().toISOString()
+        });
+        localStorage.setItem('formSubmissions', JSON.stringify(submissions));
+
+        // Atualizar contador de respostas
+        const forms = this.getForms();
+        const formIndex = forms.findIndex(f => f.id === formId);
+        if (formIndex > -1) {
+            forms[formIndex].responses = (forms[formIndex].responses || 0) + 1;
+            localStorage.setItem('forms', JSON.stringify(forms));
+        }
+    }
 }
