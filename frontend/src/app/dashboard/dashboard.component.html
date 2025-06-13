@@ -96,13 +96,32 @@
           </div>
         </div>
 
-        <div class="welcome-section">
+        <!-- Seção de boas-vindas - só aparece quando não há formulários -->
+        <div class="welcome-section"
+             *ngIf="stats.totalForms === 0">
           <h2>Bem-vindo ao Sistema de Pesquisa de Satisfação!</h2>
           <p>Comece criando seu primeiro formulário de pesquisa ou explore as funcionalidades disponíveis no menu lateral.</p>
           <button class="cta-button"
                   (click)="setActiveMenuItem(menuItems[1])">
             Criar Primeiro Formulário
           </button>
+        </div>
+
+        <!-- Seção de atividades recentes - só aparece quando há formulários -->
+        <div class="recent-activities"
+             *ngIf="stats.totalForms > 0">
+          <h2>Atividade Recente</h2>
+          <p>O sistema está funcionando com {{ stats.totalForms }} formulário(s) ativo(s) e {{ stats.totalResponses }} resposta(s) coletada(s).</p>
+          <div class="dashboard-actions">
+            <button class="action-btn primary"
+                    (click)="setActiveMenuItem(menuItems[1])">
+              <span>➕</span> Novo Formulário
+            </button>
+            <button class="action-btn secondary"
+                    (click)="setActiveMenuItem(menuItems[2])">
+              <span>📋</span> Ver Formulários
+            </button>
+          </div>
         </div>
       </div>
     </div>

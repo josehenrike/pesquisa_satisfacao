@@ -469,3 +469,87 @@
         width: 100%;
     }
 }
+
+/* Modal de confirmação de exclusão */
+.delete-modal {
+    max-width: 500px;
+}
+
+.delete-modal .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 2rem 1rem 2rem;
+}
+
+.delete-icon {
+    font-size: 2rem;
+    color: #e53e3e;
+}
+
+.delete-modal .modal-header h2 {
+    color: #e53e3e;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+}
+
+.delete-message {
+    color: #2d3748;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+}
+
+.delete-message strong {
+    color: #e53e3e;
+}
+
+.delete-warning {
+    color: #718096;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    padding: 1rem;
+    background: #fef5e7;
+    border: 1px solid #fed7aa;
+    border-radius: 6px;
+    border-left: 4px solid #f6ad55;
+}
+
+.danger-btn {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.danger-btn:hover {
+    background: linear-gradient(135deg, #c53030 0%, #9c2b2e 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+/* Animação para modal de exclusão */
+.delete-modal {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

@@ -2,6 +2,7 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-create-form',
@@ -27,6 +28,7 @@ export class CreateFormComponent {
 
   constructor(
     private router: Router,
+    private notificationService: NotificationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
@@ -94,7 +96,7 @@ export class CreateFormComponent {
     localStorage.setItem('forms', JSON.stringify(existingForms));
 
     console.log('Formulário salvo:', formData);
-    alert('Formulário criado com sucesso!');
+    this.notificationService.success('Formulário criado com sucesso!');
 
     // Voltar para o dashboard principal
     this.router.navigate(['/dashboard']);

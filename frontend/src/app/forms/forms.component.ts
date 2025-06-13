@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormService } from '../services/form.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-forms',
@@ -16,9 +17,14 @@ export class FormsComponent implements OnInit {
   showFormModal = false;
   showDropdownId: number | null = null;
 
+  // Modal de confirmação de exclusão
+  showDeleteModal = false;
+  formToDelete: any = null;
+
   constructor(
     private formService: FormService,
     private router: Router,
+    private notificationService: NotificationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
@@ -63,6 +69,11 @@ export class FormsComponent implements OnInit {
     this.selectedForm = null;
   }
 
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.formToDelete = null;
+  }
+
   copyFormLink(form: any) {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -72,7 +83,7 @@ export class FormsComponent implements OnInit {
     const formLink = `${baseUrl}/survey/${form.id}`;
 
     navigator.clipboard.writeText(formLink).then(() => {
-      alert('Link copiado para a área de transferência!');
+      this.notificationService.success('Link copiado para a área de transferência!');
     }).catch(() => {
       // Fallback para browsers mais antigos
       const textArea = document.createElement('textarea');
@@ -81,19 +92,25 @@ export class FormsComponent implements OnInit {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('Link copiado para a área de transferência!');
+      this.notificationService.success('Link copiado para a área de transferência!');
     });
 
     this.showDropdownId = null;
   }
 
   deleteForm(form: any) {
-    if (confirm(`Tem certeza que deseja excluir o formulário "${form.title}"?`)) {
-      this.formService.deleteForm(form.id);
-      this.loadForms();
-      alert('Formulário excluído com sucesso!');
-    }
+    this.formToDelete = form;
+    this.showDeleteModal = true;
     this.showDropdownId = null;
+  }
+
+  confirmDeleteForm() {
+    if (this.formToDelete) {
+      this.formService.deleteForm(this.formToDelete.id);
+      this.loadForms();
+      this.notificationService.success('Formulário excluído com sucesso!');
+      this.closeDeleteModal();
+    }
   }
 
   createNewForm() {

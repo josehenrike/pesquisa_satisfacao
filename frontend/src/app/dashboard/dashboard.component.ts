@@ -48,10 +48,8 @@ export class DashboardComponent implements OnInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateActiveMenuItem(event.url);
-        // Atualizar estatísticas quando voltar ao dashboard
-        if (event.url === '/dashboard' || event.url === '/dashboard/') {
-          this.updateStats();
-        }
+        // Atualizar estatísticas sempre que navegar para qualquer rota do dashboard
+        this.updateStats();
       }
     });
 
