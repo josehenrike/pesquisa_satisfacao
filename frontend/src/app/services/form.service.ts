@@ -1,86 +1,104 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface FormularioDTO {
+  id: number;
+  title: string;
+  description: string;
+  questions: PerguntaDTO[];
+  createdAt: string;
+  responses: number;
+  ativa: boolean;
+}
+
+export interface PerguntaDTO {
+  id: number;
+  title: string;
+  type: string;
+  options: string[];
+  required: boolean;
+}
+
+export interface CreateFormularioDTO {
+  title: string;
+  description: string;
+  questions: CreatePerguntaDTO[];
+}
+
+export interface CreatePerguntaDTO {
+  title: string;
+  type: string;
+  options: string[];
+  required: boolean;
+}
+
+export interface RespostaFormularioDTO {
+  formId: number;
+  responses: { [key: number]: any };
+}
+
+export interface EstatisticasDTO {
+  totalForms: number;
+  totalResponses: number;
+  totalParticipants: number;
+  averageRating: string;
+}
+
+export interface RespostaDetalhadaDTO {
+  id: number;
+  formularioId: number;
+  formularioTitulo: string;
+  clienteNome: string;
+  clienteEmail: string;
+  dataResposta: string;
+  respostas: { [perguntaId: number]: any };
+}
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class FormService {
+  private apiUrl = 'http://localhost:5010/api';
 
-    constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(private http: HttpClient) { }
 
-    // Buscar todos os formulários
-    getForms(): any[] {
-        if (!isPlatformBrowser(this.platformId)) {
-            return [];
-        }
-        return JSON.parse(localStorage.getItem('forms') || '[]');
-    }
+  // Buscar todos os formulários
+  getForms(): Observable<FormularioDTO[]> {
+    return this.http.get<FormularioDTO[]>(`${this.apiUrl}/pesquisas`);
+  }
 
-    // Buscar estatísticas do dashboard
-    getStats() {
-        const forms = this.getForms();
-        const totalResponses = forms.reduce((total, form) => total + (form.responses || 0), 0);
-        const totalParticipants = totalResponses; // Assumindo 1 resposta = 1 participante
+  // Buscar estatísticas do dashboard
+  getStats(): Observable<EstatisticasDTO> {
+    return this.http.get<EstatisticasDTO>(`${this.apiUrl}/pesquisas/estatisticas`);
+  }
 
-        // Calcular avaliação média (simulada por enquanto)
-        const averageRating = forms.length > 0 ? (4.2).toFixed(1) : '-';
+  // Salvar formulário
+  saveForm(formData: CreateFormularioDTO): Observable<FormularioDTO> {
+    return this.http.post<FormularioDTO>(`${this.apiUrl}/pesquisas`, formData);
+  }
 
-        return {
-            totalForms: forms.length,
-            totalResponses,
-            totalParticipants,
-            averageRating
-        };
-    }
+  // Deletar formulário
+  deleteForm(formId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/pesquisas/${formId}`);
+  }
 
-    // Salvar formulário
-    saveForm(formData: any): void {
-        if (!isPlatformBrowser(this.platformId)) {
-            return;
-        }
+  // Buscar formulário específico por ID
+  getFormById(formId: number): Observable<FormularioDTO> {
+    return this.http.get<FormularioDTO>(`${this.apiUrl}/pesquisas/${formId}`);
+  }
 
-        const existingForms = this.getForms();
-        existingForms.push(formData);
-        localStorage.setItem('forms', JSON.stringify(existingForms));
-    }
+  // Salvar resposta de formulário
+  saveFormResponse(formId: number, responses: { [key: number]: any }): Observable<any> {
+    const respostaDto: RespostaFormularioDTO = {
+      formId: formId,
+      responses: responses
+    };
+    return this.http.post(`${this.apiUrl}/pesquisas/${formId}/respostas`, respostaDto);
+  }
 
-    // Deletar formulário
-    deleteForm(formId: number): void {
-        if (!isPlatformBrowser(this.platformId)) {
-            return;
-        }
-
-        const forms = this.getForms();
-        const updatedForms = forms.filter(form => form.id !== formId);
-        localStorage.setItem('forms', JSON.stringify(updatedForms));
-    }
-
-    // Buscar formulário específico por ID
-    getFormById(formId: number): any | null {
-        const forms = this.getForms();
-        return forms.find(form => form.id === formId) || null;
-    }
-
-    // Salvar resposta de formulário
-    saveFormResponse(formId: number, responses: any): void {
-        if (!isPlatformBrowser(this.platformId)) {
-            return;
-        }
-
-        const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-        submissions.push({
-            formId: formId,
-            responses: responses,
-            submittedAt: new Date().toISOString()
-        });
-        localStorage.setItem('formSubmissions', JSON.stringify(submissions));
-
-        // Atualizar contador de respostas
-        const forms = this.getForms();
-        const formIndex = forms.findIndex(f => f.id === formId);
-        if (formIndex > -1) {
-            forms[formIndex].responses = (forms[formIndex].responses || 0) + 1;
-            localStorage.setItem('forms', JSON.stringify(forms));
-        }
-    }
+  // Buscar todas as respostas
+  getRespostas(): Observable<RespostaDetalhadaDTO[]> {
+    return this.http.get<RespostaDetalhadaDTO[]>(`${this.apiUrl}/pesquisas/respostas`);
+  }
 }

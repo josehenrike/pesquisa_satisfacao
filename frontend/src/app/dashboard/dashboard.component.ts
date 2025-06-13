@@ -13,6 +13,15 @@ import { FormService } from '../services/form.service';
 export class DashboardComponent implements OnInit {
   sidebarOpen = true;
   adminUser = 'Admin';
+  isMobile = false;
+
+  // Touch gesture variables
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private touchCurrentX = 0;
+  private touchCurrentY = 0;
+  private isDragging = false;
+
   stats: any = {
     totalForms: 0,
     totalResponses: 0,
@@ -44,10 +53,17 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Detectar se é mobile
+    this.checkMobile();
+
     // Escutar mudanças de rota para atualizar o menu ativo
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateActiveMenuItem(event.url);
+        // Fechar sidebar no mobile após navegação
+        if (this.isMobile) {
+          this.sidebarOpen = false;
+        }
         // Atualizar estatísticas sempre que navegar para qualquer rota do dashboard
         this.updateStats();
       }
@@ -58,10 +74,24 @@ export class DashboardComponent implements OnInit {
 
     // Carregar estatísticas iniciais
     this.updateStats();
+
+    // Escutar redimensionamento da janela
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('resize', () => {
+        this.checkMobile();
+      });
+    }
   }
 
   private updateStats() {
-    this.stats = this.formService.getStats();
+    this.formService.getStats().subscribe({
+      next: (stats) => {
+        this.stats = stats;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar estatísticas:', error);
+      }
+    });
   }
 
   private updateActiveMenuItem(url: string) {
@@ -109,5 +139,64 @@ export class DashboardComponent implements OnInit {
 
   hasActiveChildRoute(): boolean {
     return this.activatedRoute.children.length > 0;
+  }
+
+  private checkMobile() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+
+      // No mobile, iniciar com sidebar fechada
+      if (this.isMobile) {
+        this.sidebarOpen = false;
+      } else {
+        // No desktop, iniciar com sidebar aberta
+        this.sidebarOpen = true;
+      }
+    }
+  }
+
+  closeSidebar() {
+    this.sidebarOpen = false;
+  }
+
+  // Touch gesture methods para swipe
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+    this.isDragging = true;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+
+    event.preventDefault();
+    this.touchCurrentX = event.touches[0].clientX;
+    this.touchCurrentY = event.touches[0].clientY;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    if (!this.isDragging) return;
+
+    this.isDragging = false;
+
+    const deltaX = this.touchCurrentX - this.touchStartX;
+    const deltaY = Math.abs(this.touchCurrentY - this.touchStartY);
+
+    // Verificar se foi um swipe horizontal (não vertical)
+    if (deltaY < 100) {
+      // Swipe para direita (fechar sidebar)
+      if (deltaX > 50 && this.sidebarOpen) {
+        this.closeSidebar();
+      }
+      // Swipe para esquerda (abrir sidebar) - apenas se começou da borda esquerda
+      else if (deltaX < -50 && !this.sidebarOpen && this.touchStartX < 50) {
+        this.sidebarOpen = true;
+      }
+    }
+  }
+
+  createNewForm() {
+    // Navegar para a rota de criação de formulário
+    this.router.navigate(['/dashboard', 'create-form']);
   }
 }

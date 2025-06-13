@@ -3,63 +3,61 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface Notification {
   id: string;
-  message: string;
   type: 'success' | 'error' | 'warning' | 'info';
-  duration?: number;
+  message: string;
+  duration: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  private notifications = new BehaviorSubject<Notification[]>([]);
-  public notifications$ = this.notifications.asObservable();
+  private notificationsSubject = new BehaviorSubject<Notification[]>([]);
+  public notifications$ = this.notificationsSubject.asObservable();
 
-  private generateId(): string {
-    return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+  constructor() { }
+
+  success(message: string, duration: number = 3000) {
+    this.addNotification('success', message, duration);
   }
 
-  showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info', duration: number = 4000) {
+  error(message: string, duration: number = 5000) {
+    this.addNotification('error', message, duration);
+  }
+
+  warning(message: string, duration: number = 4000) {
+    this.addNotification('warning', message, duration);
+  }
+
+  info(message: string, duration: number = 3000) {
+    this.addNotification('info', message, duration);
+  }
+
+  private addNotification(type: Notification['type'], message: string, duration: number) {
+    const id = this.generateId();
     const notification: Notification = {
-      id: this.generateId(),
-      message,
+      id,
       type,
+      message,
       duration
     };
 
-    const currentNotifications = this.notifications.value;
-    this.notifications.next([...currentNotifications, notification]);
+    const currentNotifications = this.notificationsSubject.value;
+    this.notificationsSubject.next([...currentNotifications, notification]);
 
-    if (duration > 0) {
-      setTimeout(() => {
-        this.removeNotification(notification.id);
-      }, duration);
-    }
+    // Auto-remover notificação após duração especificada
+    setTimeout(() => {
+      this.removeNotification(id);
+    }, duration);
   }
 
   removeNotification(id: string) {
-    const currentNotifications = this.notifications.value;
-    const filteredNotifications = currentNotifications.filter(notification => notification.id !== id);
-    this.notifications.next(filteredNotifications);
+    const currentNotifications = this.notificationsSubject.value;
+    const updatedNotifications = currentNotifications.filter(n => n.id !== id);
+    this.notificationsSubject.next(updatedNotifications);
   }
 
-  clearAllNotifications() {
-    this.notifications.next([]);
-  }
-
-  success(message: string, duration?: number) {
-    this.showNotification(message, 'success', duration);
-  }
-
-  error(message: string, duration?: number) {
-    this.showNotification(message, 'error', duration);
-  }
-
-  warning(message: string, duration?: number) {
-    this.showNotification(message, 'warning', duration);
-  }
-
-  info(message: string, duration?: number) {
-    this.showNotification(message, 'info', duration);
+  private generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 }

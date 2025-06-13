@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from '../services/form.service';
+import { FormService, FormularioDTO } from '../services/form.service';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
@@ -13,8 +13,8 @@ import { NotificationService } from '../services/notification.service';
   styleUrl: './survey.component.scss'
 })
 export class SurveyComponent implements OnInit {
-  form: any = null;
-  responses: any = {};
+  form: FormularioDTO | null = null;
+  responses: { [key: number]: any } = {};
   loading = true;
   submitted = false;
   formNotFound = false;
@@ -35,25 +35,30 @@ export class SurveyComponent implements OnInit {
   }
 
   loadForm(formId: number) {
-    this.form = this.formService.getFormById(formId);
-
-    if (this.form) {
-      this.initializeResponses();
-      this.loading = false;
-    } else {
-      this.formNotFound = true;
-      this.loading = false;
-    }
+    this.formService.getFormById(formId).subscribe({
+      next: (form) => {
+        this.form = form;
+        this.initializeResponses();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar formulário:', error);
+        this.formNotFound = true;
+        this.loading = false;
+      }
+    });
   }
 
   initializeResponses() {
-    this.form.questions.forEach((question: any) => {
-      if (question.type === 'checkbox') {
-        this.responses[question.id] = [];
-      } else {
-        this.responses[question.id] = '';
-      }
-    });
+    if (this.form) {
+      this.form.questions.forEach((question) => {
+        if (question.type === 'checkbox') {
+          this.responses[question.id] = [];
+        } else {
+          this.responses[question.id] = '';
+        }
+      });
+    }
   }
 
   onCheckboxChange(questionId: number, option: string, event: any) {
@@ -72,6 +77,8 @@ export class SurveyComponent implements OnInit {
   }
 
   isFormValid(): boolean {
+    if (!this.form) return false;
+
     for (let question of this.form.questions) {
       if (question.required) {
         const response = this.responses[question.id];
@@ -84,16 +91,22 @@ export class SurveyComponent implements OnInit {
   }
 
   submitForm() {
-    if (!this.isFormValid()) {
+    if (!this.form || !this.isFormValid()) {
       this.notificationService.warning('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     // Salvar resposta usando o FormService
-    this.formService.saveFormResponse(this.form.id, this.responses);
-
-    this.submitted = true;
-    this.notificationService.success('Resposta enviada com sucesso!');
+    this.formService.saveFormResponse(this.form.id, this.responses).subscribe({
+      next: () => {
+        this.submitted = true;
+        this.notificationService.success('Resposta enviada com sucesso!');
+      },
+      error: (error) => {
+        console.error('Erro ao enviar resposta:', error);
+        this.notificationService.error('Erro ao enviar resposta');
+      }
+    });
   }
 
   goBack() {

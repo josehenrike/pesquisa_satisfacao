@@ -1,0 +1,141 @@
+<div class="responses-container">
+    <div class="responses-header">
+        <h1>Respostas dos Formulários</h1>
+        <div class="header-stats">
+            <div class="stat-card">
+                <span class="stat-number">{{ formularios.length }}</span>
+                <span class="stat-label">Formulários</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ respostas.length }}</span>
+                <span class="stat-label">Respostas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="loading"
+         class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Carregando respostas...</p>
+    </div>
+
+    <!-- Estado vazio -->
+    <div *ngIf="!loading && respostas.length === 0"
+         class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h2>Nenhuma resposta encontrada</h2>
+        <p>As respostas dos formulários aparecerão aqui quando alguém responder</p>
+    </div>
+
+    <!-- Tabela de respostas -->
+    <div *ngIf="!loading && respostas.length > 0"
+         class="responses-table-container">
+        <table class="responses-table">
+            <thead>
+                <tr>
+                    <th>Formulário</th>
+                    <th>Participante</th>
+                    <th>Email</th>
+                    <th>Data da Resposta</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let resposta of respostas"
+                    class="response-row">
+                    <td class="form-title">
+                        <strong>{{ resposta.formularioTitulo }}</strong>
+                    </td>
+                    <td class="participant-name">
+                        {{ resposta.clienteNome }}
+                    </td>
+                    <td class="participant-email">
+                        {{ resposta.clienteEmail }}
+                    </td>
+                    <td class="response-date">
+                        {{ formatDate(resposta.dataResposta) }}
+                    </td>
+                    <td class="response-actions">
+                        <button class="view-btn"
+                                (click)="viewResponse(resposta)">
+                            👁️ Ver Respostas
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Resumo por formulário -->
+    <div *ngIf="!loading && formularios.length > 0"
+         class="summary-section">
+        <h2>Resumo por Formulário</h2>
+        <div class="summary-grid">
+            <div *ngFor="let formId of getUniqueFormularios()"
+                 class="summary-card">
+                <h3>{{ getFormularioTitle(formId) }}</h3>
+                <div class="summary-stats">
+                    <span class="responses-count">{{ getResponsesCount(formId) }} respostas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de detalhes da resposta -->
+    <div *ngIf="showResponseModal"
+         class="modal-overlay"
+         (click)="closeModal()">
+        <div class="modal-content response-modal"
+             (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Detalhes da Resposta</h2>
+            </div>
+
+            <div class="modal-body"
+                 *ngIf="selectedResposta && selectedFormulario">
+                <!-- Informações do participante -->
+                <div class="participant-info">
+                    <h3>👤 Informações do Participante</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Nome:</strong> {{ selectedResposta.clienteNome }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Email:</strong> {{ selectedResposta.clienteEmail }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Data:</strong> {{ formatDate(selectedResposta.dataResposta) }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Formulário:</strong> {{ selectedResposta.formularioTitulo }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Respostas detalhadas -->
+                <div class="responses-detail">
+                    <h3>💬 Respostas</h3>
+                    <div class="responses-list">
+                        <div *ngFor="let perguntaId of selectedResposta.respostas | keyvalue"
+                             class="response-item">
+                            <div class="question-title">
+                                {{ getQuestionTitle(+perguntaId.key) }}
+                            </div>
+                            <div class="response-value">
+                                {{ formatResponse(perguntaId.value, getQuestionType(+perguntaId.key)) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="primary-btn"
+                        (click)="closeModal()">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

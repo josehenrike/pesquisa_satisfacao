@@ -59,7 +59,8 @@
                 ⋮
               </button>
               <div class="dropdown-menu"
-                   *ngIf="showDropdownId === form.id">
+                   *ngIf="showDropdownId === form.id"
+                   [ngStyle]="getDropdownStyle()">
                 <button class="dropdown-item"
                         (click)="viewForm(form)">
                   <span class="item-icon">👁️</span>
@@ -99,11 +100,11 @@
         <div *ngIf="selectedForm?.description"
              class="form-description-modal">
           <h3>Descrição</h3>
-          <p>{{ selectedForm.description }}</p>
+          <p>{{ selectedForm?.description }}</p>
         </div>
 
         <div class="form-questions-modal">
-          <h3>Perguntas ({{ selectedForm?.questions.length }})</h3>
+          <h3>Perguntas ({{ selectedForm?.questions?.length || 0 }})</h3>
 
           <div *ngFor="let question of selectedForm?.questions; let i = index"
                class="question-preview">
@@ -129,7 +130,7 @@
 
       <div class="modal-footer">
         <button class="secondary-btn"
-                (click)="copyFormLink(selectedForm)">
+                (click)="selectedForm && copyFormLink(selectedForm)">
           🔗 Copiar Link
         </button>
         <button class="primary-btn"

@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NotificationService } from '../services/notification.service';
+import { FormService, CreateFormularioDTO } from '../services/form.service';
 
 @Component({
   selector: 'app-create-form',
@@ -29,6 +30,7 @@ export class CreateFormComponent {
   constructor(
     private router: Router,
     private notificationService: NotificationService,
+    private formService: FormService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
@@ -73,33 +75,29 @@ export class CreateFormComponent {
   }
 
   saveForm() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const formData = {
-      id: Date.now(), // ID único baseado no timestamp
+    const formData: CreateFormularioDTO = {
       title: this.formTitle,
       description: this.formDescription,
-      questions: this.questions,
-      createdAt: new Date().toISOString(),
-      responses: 0 // Contador de respostas
+      questions: this.questions.map(q => ({
+        title: q.title,
+        type: q.type,
+        options: q.options || [],
+        required: q.required
+      }))
     };
 
-    // Buscar formulários existentes
-    const existingForms = JSON.parse(localStorage.getItem('forms') || '[]');
-
-    // Adicionar novo formulário
-    existingForms.push(formData);
-
-    // Salvar de volta no localStorage
-    localStorage.setItem('forms', JSON.stringify(existingForms));
-
-    console.log('Formulário salvo:', formData);
-    this.notificationService.success('Formulário criado com sucesso!');
-
-    // Voltar para o dashboard principal
-    this.router.navigate(['/dashboard']);
+    this.formService.saveForm(formData).subscribe({
+      next: (response) => {
+        console.log('Formulário salvo:', response);
+        this.notificationService.success('Formulário criado com sucesso!');
+        // Voltar para o dashboard principal
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Erro ao salvar formulário:', error);
+        this.notificationService.error('Erro ao criar formulário');
+      }
+    });
   }
 
   cancel() {

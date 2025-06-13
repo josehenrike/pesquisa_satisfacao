@@ -12,8 +12,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDevServer",
-        builder => builder
-            .WithOrigins("http://localhost:4200")
+        policy => policy
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -29,7 +29,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Removido UseHttpsRedirection para desenvolvimento
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowAngularDevServer");
 

@@ -1,0 +1,582 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.settings-container {
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 4rem);
+}
+
+// Cabeçalho
+.settings-header {
+    margin-bottom: 2rem;
+
+    h1 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    p {
+        color: #718096;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+}
+
+// Navegação por abas
+.tabs-navigation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+
+    .tab-btn {
+        background: none;
+        border: none;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        border-radius: 8px 8px 0 0;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #6b7280;
+        transition: all 0.2s ease;
+        position: relative;
+
+        &:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        &.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+        }
+    }
+}
+
+// Conteúdo das abas
+.tab-content {
+    .tab-panel {
+        animation: fadeIn 0.3s ease-in;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Cards das seções
+.section-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+
+    .section-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+
+        h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        p {
+            color: #6b7280;
+            margin: 0;
+        }
+    }
+}
+
+// Divisores de seção
+.section-divider {
+    margin: 2rem 0 1.5rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+
+    h3 {
+        color: #374151;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+    }
+}
+
+// Grid de formulários
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+// Grupos de formulário
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: 'Poppins', sans-serif;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        &::placeholder {
+            color: #9ca3af;
+        }
+
+        &:invalid {
+            border-color: #ef4444;
+        }
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+}
+
+// Input com botão
+.input-with-button {
+    display: flex;
+    gap: 0.5rem;
+
+    input {
+        flex: 1;
+    }
+
+    .search-btn {
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+    }
+}
+
+// Seletor de cor
+.color-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    input[type="color"] {
+        width: 50px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    input[type="text"] {
+        flex: 1;
+    }
+}
+
+// Upload de arquivos
+.file-upload-area {
+    .upload-btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+    }
+
+    .logo-preview {
+        margin-top: 1rem;
+
+        img {
+            max-width: 200px;
+            max-height: 100px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+// Checkbox customizado
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 400;
+
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    .checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e5e7eb;
+        border-radius: 4px;
+        margin-right: 0.75rem;
+        position: relative;
+        transition: all 0.2s ease;
+
+        &::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+    }
+
+    input[type="checkbox"]:checked+.checkmark {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+
+        &::after {
+            opacity: 1;
+        }
+    }
+}
+
+// Ações de formulário
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+// Botões
+.save-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.secondary-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border: 2px solid #e5e7eb;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #e5e7eb;
+        border-color: #d1d5db;
+    }
+}
+
+.cancel-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 2px solid #fecaca;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #fecaca;
+        border-color: #fca5a5;
+    }
+}
+
+// Ações de segurança
+.security-actions {
+    margin-bottom: 1.5rem;
+}
+
+// Formulário de alteração de senha
+.password-change-form {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 1rem;
+        padding-top: 0.5rem;
+    }
+
+    .settings-header {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .tabs-navigation {
+        overflow-x: auto;
+        padding: 0 0.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+
+        .tab-btn {
+            flex-shrink: 0;
+            min-width: 120px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 8px 8px 0 0;
+
+            &.active::after {
+                display: none;
+            }
+        }
+    }
+
+    .section-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+
+        .section-header {
+            margin-bottom: 1.5rem;
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .form-group {
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 0.875rem;
+            font-size: 1rem;
+            border-radius: 6px;
+        }
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+
+        .save-btn,
+        .secondary-btn,
+        .cancel-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+    }
+
+    .input-with-button {
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .search-btn {
+            width: 100%;
+            padding: 0.875rem;
+        }
+    }
+
+    .color-input-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+
+        input[type="color"] {
+            width: 100%;
+            height: 50px;
+        }
+    }
+
+    .file-upload-area {
+        .upload-btn {
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .logo-preview {
+            text-align: center;
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    }
+
+    .checkbox-label {
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+
+        .checkmark {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    .security-actions {
+        .secondary-btn {
+            width: 100%;
+            padding: 1rem;
+        }
+    }
+
+    .password-change-form {
+        padding: 1rem;
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+// Mobile pequeno (telefones em retrato)
+@media (max-width: 480px) {
+    .settings-container {
+        padding: 0.75rem;
+    }
+
+    .settings-header {
+        h1 {
+            font-size: 1.3rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+    }
+
+    .tabs-navigation {
+        .tab-btn {
+            min-width: 100px;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    .section-card {
+        padding: 1rem;
+
+        .section-header {
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .form-group {
+
+        input,
+        select,
+        textarea {
+            padding: 0.75rem;
+            font-size: 16px; // Previne zoom no iOS
+        }
+    }
+}

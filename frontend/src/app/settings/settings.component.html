@@ -1,0 +1,488 @@
+<div class="settings-container">
+    <div class="settings-header">
+        <h1>⚙️ Configurações</h1>
+        <p>Gerencie as configurações da sua empresa e conta</p>
+    </div>
+
+    <!-- Navegação por abas -->
+    <div class="tabs-navigation">
+        <button class="tab-btn"
+                [class.active]="activeTab === 'empresa'"
+                (click)="setActiveTab('empresa')">
+            🏢 Empresa
+        </button>
+        <button class="tab-btn"
+                [class.active]="activeTab === 'admin'"
+                (click)="setActiveTab('admin')">
+            👤 Administrador
+        </button>
+        <button class="tab-btn"
+                [class.active]="activeTab === 'personalizacao'"
+                (click)="setActiveTab('personalizacao')">
+            🎨 Personalização
+        </button>
+    </div>
+
+    <!-- Conteúdo das abas -->
+    <div class="tab-content">
+
+        <!-- ABA: EMPRESA -->
+        <div *ngIf="activeTab === 'empresa'"
+             class="tab-panel">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>📋 Informações da Empresa</h2>
+                    <p>Dados básicos da sua empresa</p>
+                </div>
+
+                <form (ngSubmit)="salvarEmpresa()"
+                      #empresaForm="ngForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomeEmpresa">Nome da Empresa *</label>
+                            <input type="text"
+                                   id="nomeEmpresa"
+                                   [(ngModel)]="empresa.nome"
+                                   name="nomeEmpresa"
+                                   required
+                                   placeholder="Digite o nome da empresa">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ *</label>
+                            <input type="text"
+                                   id="cnpj"
+                                   [(ngModel)]="empresa.cnpj"
+                                   name="cnpj"
+                                   required
+                                   placeholder="00.000.000/0000-00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="razaoSocial">Razão Social</label>
+                            <input type="text"
+                                   id="razaoSocial"
+                                   [(ngModel)]="empresa.razaoSocial"
+                                   name="razaoSocial"
+                                   placeholder="Razão social da empresa">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefoneEmpresa">Telefone</label>
+                            <input type="text"
+                                   id="telefoneEmpresa"
+                                   [(ngModel)]="empresa.telefone"
+                                   name="telefoneEmpresa"
+                                   placeholder="(00) 0000-0000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailEmpresa">Email de Contato</label>
+                            <input type="email"
+                                   id="emailEmpresa"
+                                   [(ngModel)]="empresa.email"
+                                   name="emailEmpresa"
+                                   placeholder="contato@empresa.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website">Website</label>
+                            <input type="text"
+                                   id="website"
+                                   [(ngModel)]="empresa.website"
+                                   name="website"
+                                   placeholder="www.empresa.com">
+                        </div>
+                    </div>
+
+                    <!-- Logo da empresa -->
+                    <div class="form-group">
+                        <label>Logo da Empresa</label>
+                        <div class="file-upload-area">
+                            <input type="file"
+                                   id="logoEmpresa"
+                                   accept="image/*"
+                                   (change)="onFileSelected($event, 'logo')"
+                                   style="display: none;">
+                            <label for="logoEmpresa"
+                                   class="upload-btn">
+                                📁 Escolher Logo
+                            </label>
+                            <div *ngIf="empresa.logo"
+                                 class="logo-preview">
+                                <img [src]="empresa.logo"
+                                     alt="Logo da empresa">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="section-divider">
+                        <h3>📍 Endereço</h3>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cep">CEP</label>
+                            <div class="input-with-button">
+                                <input type="text"
+                                       id="cep"
+                                       [(ngModel)]="empresa.endereco.cep"
+                                       name="cep"
+                                       placeholder="00000-000">
+                                <button type="button"
+                                        class="search-btn"
+                                        (click)="buscarCEP()">
+                                    🔍
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rua">Rua/Avenida</label>
+                            <input type="text"
+                                   id="rua"
+                                   [(ngModel)]="empresa.endereco.rua"
+                                   name="rua"
+                                   placeholder="Nome da rua">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numero">Número</label>
+                            <input type="text"
+                                   id="numero"
+                                   [(ngModel)]="empresa.endereco.numero"
+                                   name="numero"
+                                   placeholder="123">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="complemento">Complemento</label>
+                            <input type="text"
+                                   id="complemento"
+                                   [(ngModel)]="empresa.endereco.complemento"
+                                   name="complemento"
+                                   placeholder="Sala, bloco, etc">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bairro">Bairro</label>
+                            <input type="text"
+                                   id="bairro"
+                                   [(ngModel)]="empresa.endereco.bairro"
+                                   name="bairro"
+                                   placeholder="Nome do bairro">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text"
+                                   id="cidade"
+                                   [(ngModel)]="empresa.endereco.cidade"
+                                   name="cidade"
+                                   placeholder="Nome da cidade">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado"
+                                    [(ngModel)]="empresa.endereco.estado"
+                                    name="estado">
+                                <option value="">Selecione...</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit"
+                                class="save-btn"
+                                [disabled]="loadingEmpresa || !empresaForm.valid">
+                            <span *ngIf="loadingEmpresa">⏳ Salvando...</span>
+                            <span *ngIf="!loadingEmpresa">💾 Salvar Dados da Empresa</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ABA: ADMINISTRADOR -->
+        <div *ngIf="activeTab === 'admin'"
+             class="tab-panel">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>👨‍💼 Dados do Administrador</h2>
+                    <p>Informações do responsável pela conta</p>
+                </div>
+
+                <form (ngSubmit)="salvarAdmin()"
+                      #adminForm="ngForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomeAdmin">Nome Completo *</label>
+                            <input type="text"
+                                   id="nomeAdmin"
+                                   [(ngModel)]="admin.nome"
+                                   name="nomeAdmin"
+                                   required
+                                   placeholder="Digite seu nome completo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailAdmin">Email *</label>
+                            <input type="email"
+                                   id="emailAdmin"
+                                   [(ngModel)]="admin.email"
+                                   name="emailAdmin"
+                                   required
+                                   placeholder="seu@email.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefoneAdmin">Telefone</label>
+                            <input type="text"
+                                   id="telefoneAdmin"
+                                   [(ngModel)]="admin.telefone"
+                                   name="telefoneAdmin"
+                                   placeholder="(00) 00000-0000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cargo">Cargo</label>
+                            <input type="text"
+                                   id="cargo"
+                                   [(ngModel)]="admin.cargo"
+                                   name="cargo"
+                                   placeholder="Seu cargo na empresa">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit"
+                                class="save-btn"
+                                [disabled]="loadingAdmin || !adminForm.valid">
+                            <span *ngIf="loadingAdmin">⏳ Salvando...</span>
+                            <span *ngIf="!loadingAdmin">💾 Salvar Dados do Admin</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Seção de Alteração de Senha -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>🔐 Segurança da Conta</h2>
+                    <p>Gerencie a segurança da sua conta</p>
+                </div>
+
+                <div class="security-actions">
+                    <button class="secondary-btn"
+                            (click)="showPasswordChange = !showPasswordChange">
+                        🔑 Alterar Senha
+                    </button>
+                </div>
+
+                <div *ngIf="showPasswordChange"
+                     class="password-change-form">
+                    <form (ngSubmit)="alterarSenha()"
+                          #passwordForm="ngForm">
+                        <div class="form-group">
+                            <label for="senhaAtual">Senha Atual</label>
+                            <input type="password"
+                                   id="senhaAtual"
+                                   [(ngModel)]="passwordData.senhaAtual"
+                                   name="senhaAtual"
+                                   required
+                                   placeholder="Digite sua senha atual">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="novaSenha">Nova Senha</label>
+                            <input type="password"
+                                   id="novaSenha"
+                                   [(ngModel)]="passwordData.novaSenha"
+                                   name="novaSenha"
+                                   required
+                                   minlength="6"
+                                   placeholder="Digite a nova senha">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmarSenha">Confirmar Nova Senha</label>
+                            <input type="password"
+                                   id="confirmarSenha"
+                                   [(ngModel)]="passwordData.confirmarSenha"
+                                   name="confirmarSenha"
+                                   required
+                                   placeholder="Confirme a nova senha">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button"
+                                    class="cancel-btn"
+                                    (click)="showPasswordChange = false">
+                                Cancelar
+                            </button>
+                            <button type="submit"
+                                    class="save-btn"
+                                    [disabled]="!passwordForm.valid">
+                                🔒 Alterar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA: PERSONALIZAÇÃO -->
+        <div *ngIf="activeTab === 'personalizacao'"
+             class="tab-panel">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>🎨 Personalização</h2>
+                    <p>Customize a aparência dos seus formulários</p>
+                </div>
+
+                <form (ngSubmit)="salvarPersonalizacao()"
+                      #personalizacaoForm="ngForm">
+                    <!-- Cores da marca -->
+                    <div class="section-divider">
+                        <h3>🌈 Cores da Marca</h3>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="corPrimaria">Cor Primária</label>
+                            <div class="color-input-group">
+                                <input type="color"
+                                       id="corPrimaria"
+                                       [(ngModel)]="personalizacao.corPrimaria"
+                                       name="corPrimaria">
+                                <input type="text"
+                                       [(ngModel)]="personalizacao.corPrimaria"
+                                       placeholder="#667eea">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="corSecundaria">Cor Secundária</label>
+                            <div class="color-input-group">
+                                <input type="color"
+                                       id="corSecundaria"
+                                       [(ngModel)]="personalizacao.corSecundaria"
+                                       name="corSecundaria">
+                                <input type="text"
+                                       [(ngModel)]="personalizacao.corSecundaria"
+                                       placeholder="#764ba2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo para formulários -->
+                    <div class="form-group">
+                        <label>Logo para Formulários</label>
+                        <div class="file-upload-area">
+                            <input type="file"
+                                   id="logoFormularios"
+                                   accept="image/*"
+                                   (change)="onFileSelected($event, 'logoFormularios')"
+                                   style="display: none;">
+                            <label for="logoFormularios"
+                                   class="upload-btn">
+                                📁 Escolher Logo
+                            </label>
+                            <div *ngIf="personalizacao.logoFormularios"
+                                 class="logo-preview">
+                                <img [src]="personalizacao.logoFormularios"
+                                     alt="Logo dos formulários">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Textos padrão -->
+                    <div class="section-divider">
+                        <h3>📝 Textos Padrão</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensagemBoasVindas">Mensagem de Boas-vindas</label>
+                        <textarea id="mensagemBoasVindas"
+                                  [(ngModel)]="personalizacao.mensagemBoasVindas"
+                                  name="mensagemBoasVindas"
+                                  rows="3"
+                                  placeholder="Texto exibido no início dos formulários"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="textoAgradecimento">Texto de Agradecimento</label>
+                        <textarea id="textoAgradecimento"
+                                  [(ngModel)]="personalizacao.textoAgradecimento"
+                                  name="textoAgradecimento"
+                                  rows="3"
+                                  placeholder="Texto exibido após envio do formulário"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rodapeFormularios">Rodapé dos Formulários</label>
+                        <textarea id="rodapeFormularios"
+                                  [(ngModel)]="personalizacao.rodapeFormularios"
+                                  name="rodapeFormularios"
+                                  rows="2"
+                                  placeholder="Texto exibido no final dos formulários"></textarea>
+                    </div>
+
+                    <!-- Tema -->
+                    <div class="section-divider">
+                        <h3>🌙 Tema</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox"
+                                   [(ngModel)]="personalizacao.temaEscuro"
+                                   name="temaEscuro">
+                            <span class="checkmark"></span>
+                            Ativar tema escuro
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit"
+                                class="save-btn"
+                                [disabled]="loadingPersonalizacao">
+                            <span *ngIf="loadingPersonalizacao">⏳ Salvando...</span>
+                            <span *ngIf="!loadingPersonalizacao">💾 Salvar Personalização</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

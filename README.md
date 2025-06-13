@@ -1,93 +1,227 @@
 # Sistema de Pesquisa de Satisfação
 
-Este é um sistema desenvolvido para gerenciar pesquisas de satisfação de clientes, permitindo que empresas criem e distribuam formulários de avaliação.
+Sistema completo de criação e gerenciamento de formulários de pesquisa com Angular e .NET Core.
 
-## Tecnologias Utilizadas
-
-- Frontend: Angular 17
-- Backend: .NET 8 (C#)
-- Banco de Dados: PostgreSQL 15+
-
-## Funcionalidades Principais
-
-- Criação de pesquisas personalizadas
-- Geração de links únicos para cada pesquisa
-- Dashboard para visualização de resultados
-- Relatórios e análises de satisfação
-- Interface responsiva e moderna
-
-## Requisitos
-
-- Node.js 18+
-- .NET 8 SDK
-- PostgreSQL 15+
-- pgAdmin 4 (opcional, para gerenciamento do banco)
-
-## Como Executar
-
-### Banco de Dados
-1. Instale o PostgreSQL
-2. Crie um banco de dados chamado `pesquisa_satisfacao`
-3. Execute os scripts de migração na pasta `backend/Database/Migrations`
-
-### Backend
-1. Navegue até a pasta `backend`
-2. Configure a string de conexão no `appsettings.json`
-3. Execute `dotnet restore`
-4. Execute `dotnet run`
+## 🚀 Tecnologias Utilizadas
 
 ### Frontend
-1. Navegue até a pasta `frontend`
-2. Execute `npm install`
-3. Execute `ng serve`
+- **Angular 18** - Framework principal
+- **TypeScript** - Linguagem de programação
+- **SCSS** - Pré-processador CSS
+- **Standalone Components** - Arquitetura moderna do Angular
 
-## Estrutura do Projeto
+### Backend
+- **.NET 9.0** - Framework backend
+- **ASP.NET Core Web API** - API RESTful
+- **Entity Framework Core** - ORM
+- **PostgreSQL** - Banco de dados
+- **Swagger** - Documentação da API
+
+## 📋 Funcionalidades
+
+### Dashboard Administrativo
+- ✅ Estatísticas em tempo real
+- ✅ Visão geral de formulários e respostas
+- ✅ Interface moderna e responsiva
+
+### Gerenciamento de Formulários
+- ✅ Criação de formulários dinâmicos
+- ✅ 7 tipos de campos suportados:
+  - Texto simples
+  - Número
+  - Email
+  - Múltipla escolha (radio)
+  - Seleção múltipla (checkbox)
+  - Texto longo (textarea)
+  - Avaliação (1-5 estrelas)
+- ✅ Campos obrigatórios
+- ✅ Validação automática
+- ✅ Edição e exclusão
+
+### Sistema de Respostas
+- ✅ Links únicos para compartilhamento
+- ✅ Interface otimizada para mobile
+- ✅ Validação de campos obrigatórios
+- ✅ Salvamento automático no banco
+
+### Sistema de Notificações
+- ✅ Notificações em tempo real
+- ✅ Design moderno (sucesso, erro, warning, info)
+- ✅ Posicionamento no canto superior direito
+
+## 🛠️ Configuração do Ambiente
+
+### Pré-requisitos
+- Node.js 18+ e npm
+- .NET 9.0 SDK
+- PostgreSQL 13+
+- Git
+
+### 1. Configuração do Banco de Dados
+
+```bash
+# Criar banco de dados no PostgreSQL
+createdb pesquisa_satisfacao
+
+# Configurar credenciais no backend/appsettings.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=pesquisa_satisfacao;Username=seu_usuario;Password=sua_senha"
+  }
+}
+```
+
+### 2. Backend (.NET Core)
+
+```bash
+# Navegar para o diretório do backend
+cd backend
+
+# Restaurar dependências
+dotnet restore
+
+# Executar migrations
+dotnet ef database update
+
+# Executar a aplicação
+dotnet run
+```
+
+A API estará disponível em: `http://localhost:5010`
+Swagger UI: `http://localhost:5010/swagger`
+
+### 3. Frontend (Angular)
+
+```bash
+# Navegar para o diretório do frontend
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Executar a aplicação
+npm start
+```
+
+A aplicação estará disponível em: `http://localhost:4200`
+
+## 📖 Como Usar
+
+### 1. Acesso ao Sistema
+- Acesse `http://localhost:4200`
+- Faça login com qualquer credencial (admin/admin)
+
+### 2. Criar Formulário
+- No dashboard, clique em "Criar Formulário"
+- Preencha título e descrição
+- Adicione perguntas clicando em "Adicionar Pergunta"
+- Configure cada pergunta (título, tipo, obrigatório, opções)
+- Clique em "Salvar Formulário"
+
+### 3. Compartilhar Formulário
+- Na listagem de formulários, clique nos 3 pontos
+- Selecione "Copiar Link"
+- Compartilhe o link gerado
+
+### 4. Responder Formulário
+- Acesse o link compartilhado
+- Preencha todas as perguntas
+- Clique em "Enviar Resposta"
+
+## 🗂️ Estrutura do Projeto
 
 ```
 PesquisaSatisfacao/
-├── backend/           # API .NET
-│   ├── Controllers/   # Controladores da API
-│   ├── Models/        # Modelos de dados
-│   ├── Services/      # Serviços de negócio
-│   ├── Database/      # Configurações e migrações do banco
-│   └── DTOs/          # Objetos de transferência de dados
-├── frontend/         # Aplicação Angular
-│   ├── src/
-│   │   ├── app/      # Componentes e serviços
-│   │   ├── assets/   # Recursos estáticos
-│   │   └── environments/ # Configurações
+├── backend/
+│   ├── Controllers/          # Controladores da API
+│   ├── Models/              # Modelos de dados
+│   │   └── DTOs/           # Data Transfer Objects
+│   ├── Data/               # Contexto do banco
+│   ├── Migrations/         # Migrações do EF Core
+│   └── Program.cs          # Configuração da aplicação
+├── frontend/
+│   ├── src/app/
+│   │   ├── components/     # Componentes reutilizáveis
+│   │   ├── services/       # Serviços Angular
+│   │   ├── dashboard/      # Dashboard administrativo
+│   │   ├── create-form/    # Criação de formulários
+│   │   ├── forms/          # Listagem de formulários
+│   │   ├── survey/         # Interface de resposta
+│   │   └── login/          # Tela de login
 │   └── ...
-└── docs/            # Documentação
+└── README.md
 ```
 
-## Modelo de Dados
+## 🔗 Endpoints da API
 
-### Principais Entidades
+### Formulários
+- `GET /api/pesquisas` - Listar todos os formulários
+- `GET /api/pesquisas/{id}` - Obter formulário específico
+- `POST /api/pesquisas` - Criar novo formulário
+- `PUT /api/pesquisas/{id}` - Editar formulário
+- `DELETE /api/pesquisas/{id}` - Excluir formulário
 
-1. **Pesquisa**
-   - ID
-   - Título
-   - Descrição
-   - Data de Criação
-   - Status (Ativa/Inativa)
-   - Link Único
+### Respostas
+- `POST /api/pesquisas/{id}/respostas` - Enviar resposta
 
-2. **Pergunta**
-   - ID
-   - Texto
-   - Tipo (Múltipla Escolha, Texto, Escala)
-   - Opções (para múltipla escolha)
-   - Ordem
+### Estatísticas
+- `GET /api/pesquisas/estatisticas` - Obter estatísticas do dashboard
 
-3. **Resposta**
-   - ID
-   - ID da Pesquisa
-   - ID da Pergunta
-   - Valor
-   - Data de Resposta
+## 📱 Design Responsivo
 
-4. **Cliente**
-   - ID
-   - Nome
-   - Email
-   - Data de Cadastro 
+O sistema foi desenvolvido com foco em responsividade:
+
+- **Desktop**: Layout completo com sidebar
+- **Tablet**: Layout adaptado para telas médias
+- **Mobile**: Interface otimizada para touch
+- **Touch Targets**: Mínimo 48px conforme guidelines
+
+## 🔧 Tecnologias e Padrões
+
+### Frontend
+- **Standalone Components**: Arquitetura moderna do Angular
+- **Observables**: Programação reativa com RxJS
+- **TypeScript Strict**: Tipagem rigorosa
+- **SCSS Modules**: Estilos componentizados
+- **Angular Signals**: Para reatividade (preparado para futuro)
+
+### Backend
+- **Clean Architecture**: Separação clara de responsabilidades
+- **Repository Pattern**: Com Entity Framework
+- **DTO Pattern**: Para transferência de dados
+- **CORS**: Configurado para desenvolvimento
+- **Swagger**: Documentação automática da API
+
+## 🚀 Deploy
+
+### Backend
+1. Configurar string de conexão para produção
+2. Executar `dotnet publish -c Release`
+3. Deploy em IIS, Azure, ou Docker
+
+### Frontend
+1. Executar `ng build --configuration production`
+2. Deploy da pasta `dist/` em servidor web
+3. Configurar proxy para APIs se necessário
+
+## 📝 Próximas Melhorias
+
+- [ ] Autenticação JWT
+- [ ] Relatórios avançados
+- [ ] Exportação de dados (Excel, PDF)
+- [ ] Templates de formulários
+- [ ] Análise de dados com gráficos
+- [ ] Notifications push
+- [ ] API de webhooks
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes. 

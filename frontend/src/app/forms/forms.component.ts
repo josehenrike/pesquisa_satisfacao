@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormService } from '../services/form.service';
+import { FormService, FormularioDTO } from '../services/form.service';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
@@ -12,14 +12,17 @@ import { NotificationService } from '../services/notification.service';
   styleUrl: './forms.component.scss'
 })
 export class FormsComponent implements OnInit {
-  forms: any[] = [];
-  selectedForm: any = null;
+  forms: FormularioDTO[] = [];
+  selectedForm: FormularioDTO | null = null;
   showFormModal = false;
   showDropdownId: number | null = null;
 
   // Modal de confirmação de exclusão
   showDeleteModal = false;
-  formToDelete: any = null;
+  formToDelete: FormularioDTO | null = null;
+
+  // Posição do dropdown
+  dropdownPosition = { top: 0, left: 0 };
 
   constructor(
     private formService: FormService,
@@ -39,7 +42,15 @@ export class FormsComponent implements OnInit {
   }
 
   loadForms() {
-    this.forms = this.formService.getForms();
+    this.formService.getForms().subscribe({
+      next: (forms) => {
+        this.forms = forms;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar formulários:', error);
+        this.notificationService.error('Erro ao carregar formulários');
+      }
+    });
   }
 
   formatDate(dateString: string): string {
@@ -55,10 +66,43 @@ export class FormsComponent implements OnInit {
 
   toggleDropdown(formId: number, event: Event) {
     event.stopPropagation();
-    this.showDropdownId = this.showDropdownId === formId ? null : formId;
+
+    if (this.showDropdownId === formId) {
+      this.showDropdownId = null;
+      return;
+    }
+
+    // Calcular posição do dropdown
+    const target = event.target as HTMLElement;
+    const rect = target.getBoundingClientRect();
+
+    // Posicionar o dropdown logo abaixo do botão
+    this.dropdownPosition = {
+      top: rect.bottom + window.scrollY,
+      left: rect.right - 150 + window.scrollX // 150px é a largura mínima do dropdown
+    };
+
+    // Verificar se o dropdown vai sair da tela e ajustar
+    if (this.dropdownPosition.left < 10) {
+      this.dropdownPosition.left = 10;
+    }
+
+    const windowWidth = window.innerWidth;
+    if (this.dropdownPosition.left + 150 > windowWidth - 10) {
+      this.dropdownPosition.left = windowWidth - 160;
+    }
+
+    this.showDropdownId = formId;
   }
 
-  viewForm(form: any) {
+  getDropdownStyle() {
+    return {
+      'top.px': this.dropdownPosition.top,
+      'left.px': this.dropdownPosition.left
+    };
+  }
+
+  viewForm(form: FormularioDTO) {
     this.selectedForm = form;
     this.showFormModal = true;
     this.showDropdownId = null;
@@ -74,7 +118,7 @@ export class FormsComponent implements OnInit {
     this.formToDelete = null;
   }
 
-  copyFormLink(form: any) {
+  copyFormLink(form: FormularioDTO) {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -98,7 +142,7 @@ export class FormsComponent implements OnInit {
     this.showDropdownId = null;
   }
 
-  deleteForm(form: any) {
+  deleteForm(form: FormularioDTO) {
     this.formToDelete = form;
     this.showDeleteModal = true;
     this.showDropdownId = null;
@@ -106,10 +150,17 @@ export class FormsComponent implements OnInit {
 
   confirmDeleteForm() {
     if (this.formToDelete) {
-      this.formService.deleteForm(this.formToDelete.id);
-      this.loadForms();
-      this.notificationService.success('Formulário excluído com sucesso!');
-      this.closeDeleteModal();
+      this.formService.deleteForm(this.formToDelete.id).subscribe({
+        next: () => {
+          this.loadForms();
+          this.notificationService.success('Formulário excluído com sucesso!');
+          this.closeDeleteModal();
+        },
+        error: (error) => {
+          console.error('Erro ao excluir formulário:', error);
+          this.notificationService.error('Erro ao excluir formulário');
+        }
+      });
     }
   }
 

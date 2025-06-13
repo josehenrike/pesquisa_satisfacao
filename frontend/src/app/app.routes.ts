@@ -8,7 +8,9 @@ export const routes: Routes = [
     loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
     children: [
       { path: 'create-form', loadComponent: () => import('./create-form/create-form.component').then(m => m.CreateFormComponent) },
-      { path: 'forms', loadComponent: () => import('./forms/forms.component').then(m => m.FormsComponent) }
+      { path: 'forms', loadComponent: () => import('./forms/forms.component').then(m => m.FormsComponent) },
+      { path: 'responses', loadComponent: () => import('./responses/responses.component').then(m => m.ResponsesComponent) },
+      { path: 'settings', loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent) }
     ]
   },
 ];
