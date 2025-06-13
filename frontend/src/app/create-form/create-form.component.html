@@ -1,0 +1,130 @@
+<div class="create-form-container">
+  <div class="form-header">
+    <h1>Criar Novo Formulário</h1>
+    <p>Configure seu formulário de pesquisa de satisfação</p>
+  </div>
+
+  <div class="form-content">
+    <!-- Informações básicas do formulário -->
+    <div class="form-section">
+      <h2>Informações Básicas</h2>
+
+      <div class="input-group">
+        <label for="formTitle">Título do Formulário *</label>
+        <input type="text"
+               id="formTitle"
+               [(ngModel)]="formTitle"
+               placeholder="Ex: Pesquisa de Satisfação do Cliente"
+               required>
+      </div>
+
+      <div class="input-group">
+        <label for="formDescription">Descrição</label>
+        <textarea id="formDescription"
+                  [(ngModel)]="formDescription"
+                  placeholder="Descreva o objetivo desta pesquisa..."
+                  rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- Perguntas -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2>Perguntas</h2>
+        <button type="button"
+                class="add-question-btn"
+                (click)="addQuestion()">
+          <span>+</span> Adicionar Pergunta
+        </button>
+      </div>
+
+      <div *ngIf="questions.length === 0"
+           class="empty-state">
+        <p>Nenhuma pergunta adicionada ainda.</p>
+        <p>Clique em "Adicionar Pergunta" para começar.</p>
+      </div>
+
+      <div *ngFor="let question of questions; let i = index; trackBy: trackByQuestionIndex"
+           class="question-card">
+        <div class="question-header">
+          <span class="question-number">Pergunta {{ i + 1 }}</span>
+          <button type="button"
+                  class="remove-btn"
+                  (click)="removeQuestion(i)">
+            ✕
+          </button>
+        </div>
+
+        <div class="question-content">
+          <div class="input-group">
+            <label>Título da Pergunta *</label>
+            <input type="text"
+                   [(ngModel)]="question.title"
+                   placeholder="Digite sua pergunta sdasdasd..."
+                   required>
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label>Tipo de Resposta</label>
+              <select [(ngModel)]="question.type">
+                <option *ngFor="let type of questionTypes"
+                        [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox"
+                       [(ngModel)]="question.required">
+                Pergunta obrigatória
+              </label>
+            </div>
+          </div>
+
+          <!-- Opções para múltipla escolha -->
+          <div *ngIf="question.type === 'radio' || question.type === 'checkbox'"
+               class="options-section">
+            <label>Opções de Resposta</label>
+
+            <div *ngFor="let option of question.options; let j = index; trackBy: trackByOptionIndex"
+                 class="option-item">
+              <input type="text"
+                     [value]="option"
+                     (input)="updateOption(i, j, $event)"
+                     placeholder="Opção {{ j + 1 }}">
+              <button type="button"
+                      class="remove-option-btn"
+                      (click)="removeOption(i, j)">
+                ✕
+              </button>
+            </div>
+
+            <button type="button"
+                    class="add-option-btn"
+                    (click)="addOption(i)">
+              + Adicionar Opção
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="form-actions">
+      <button type="button"
+              class="cancel-btn"
+              (click)="cancel()">
+        Cancelar
+      </button>
+      <button type="button"
+              class="save-btn"
+              (click)="saveForm()"
+              [disabled]="!formTitle || questions.length === 0">
+        Salvar Formulário
+      </button>
+    </div>
+  </div>
+</div>

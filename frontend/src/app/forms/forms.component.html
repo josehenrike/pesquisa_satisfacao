@@ -1,0 +1,142 @@
+<div class="forms-container">
+    <div class="forms-header">
+        <h1>Formulários</h1>
+        <button class="create-btn"
+                (click)="createNewForm()">
+            <span>+</span> Novo Formulário
+        </button>
+    </div>
+
+    <!-- Estado vazio -->
+    <div *ngIf="forms.length === 0"
+         class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h2>Nenhum formulário criado</h2>
+        <p>Crie seu primeiro formulário para começar a coletar respostas</p>
+        <button class="cta-button"
+                (click)="createNewForm()">
+            Criar Primeiro Formulário
+        </button>
+    </div>
+
+    <!-- Tabela de formulários -->
+    <div *ngIf="forms.length > 0"
+         class="forms-table-container">
+        <table class="forms-table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Perguntas</th>
+                    <th>Respostas</th>
+                    <th>Criado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let form of forms"
+                    class="form-row">
+                    <td class="form-title"
+                        (click)="viewForm(form)">
+                        <strong>{{ form.title }}</strong>
+                    </td>
+                    <td class="form-description">
+                        {{ form.description || 'Sem descrição' }}
+                    </td>
+                    <td class="form-questions">
+                        {{ form.questions.length }}
+                    </td>
+                    <td class="form-responses">
+                        {{ form.responses || 0 }}
+                    </td>
+                    <td class="form-date">
+                        {{ formatDate(form.createdAt) }}
+                    </td>
+                    <td class="form-actions">
+                        <div class="actions-dropdown">
+                            <button class="actions-btn"
+                                    (click)="toggleDropdown(form.id, $event)">
+                                ⋮
+                            </button>
+                            <div class="dropdown-menu"
+                                 *ngIf="showDropdownId === form.id">
+                                <button class="dropdown-item"
+                                        (click)="viewForm(form)">
+                                    <span class="item-icon">👁️</span>
+                                    Visualizar
+                                </button>
+                                <button class="dropdown-item"
+                                        (click)="copyFormLink(form)">
+                                    <span class="item-icon">🔗</span>
+                                    Copiar Link
+                                </button>
+                                <button class="dropdown-item delete"
+                                        (click)="deleteForm(form)">
+                                    <span class="item-icon">🗑️</span>
+                                    Excluir
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal de visualização do formulário -->
+    <div *ngIf="showFormModal"
+         class="modal-overlay"
+         (click)="closeModal()">
+        <div class="modal-content"
+             (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ selectedForm?.title }}</h2>
+                <button class="close-btn"
+                        (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div *ngIf="selectedForm?.description"
+                     class="form-description-modal">
+                    <h3>Descrição</h3>
+                    <p>{{ selectedForm.description }}</p>
+                </div>
+
+                <div class="form-questions-modal">
+                    <h3>Perguntas ({{ selectedForm?.questions.length }})</h3>
+
+                    <div *ngFor="let question of selectedForm?.questions; let i = index"
+                         class="question-preview">
+                        <div class="question-header-preview">
+                            <span class="question-number-preview">{{ i + 1 }}</span>
+                            <span class="question-type-badge">{{ getQuestionTypeLabel(question.type) }}</span>
+                            <span *ngIf="question.required"
+                                  class="required-badge">Obrigatória</span>
+                        </div>
+
+                        <h4>{{ question.title }}</h4>
+
+                        <div *ngIf="question.options && question.options.length > 0"
+                             class="question-options-preview">
+                            <p><strong>Opções:</strong></p>
+                            <ul>
+                                <li *ngFor="let option of question.options">{{ option }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="secondary-btn"
+                        (click)="copyFormLink(selectedForm)">
+                    🔗 Copiar Link
+                </button>
+                <button class="primary-btn"
+                        (click)="closeModal()">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

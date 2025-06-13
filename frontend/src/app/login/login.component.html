@@ -1,0 +1,34 @@
+<div class="login-container">
+  <h2>Login do Administrador</h2>
+  <div class="login-footer">
+    Sistema de Pesquisa de Satisfação
+  </div>
+  <form (ngSubmit)="login()"
+        #loginForm="ngForm">
+    <div class="form-group">
+      <label for="username">Usuário</label>
+      <input id="username"
+             name="username"
+             [(ngModel)]="username"
+             required
+             placeholder="Digite seu usuário" />
+    </div>
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input id="password"
+             name="password"
+             type="password"
+             [(ngModel)]="password"
+             required
+             placeholder="Digite sua senha" />
+    </div>
+    <button type="submit"
+            [disabled]="loginForm.invalid">
+      Entrar
+    </button>
+    <div *ngIf="loginError"
+         class="error">
+      Usuário ou senha inválidos.
+    </div>
+  </form>
+</div>
