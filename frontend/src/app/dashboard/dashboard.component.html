@@ -45,17 +45,18 @@
       }
     </div>
 
-    @if(sidebarOpen){
+    @if(sidebarOpen || !isMobile){
     <div class="user-info">
       <div class="user-avatar">👤</div>
+      @if(sidebarOpen){
       <div class="user-details">
         <span class="user-name">{{ adminUser }}</span>
         <span class="user-role">Administrador</span>
       </div>
+      }
     </div>
     }
 
-    @if(sidebarOpen){
     <nav class="sidebar-nav">
       <ul class="nav-list">
         <li *ngFor="let item of menuItems"
@@ -68,7 +69,6 @@
         </li>
       </ul>
     </nav>
-    }
 
     @if(sidebarOpen){
     <div class="sidebar-footer">
