@@ -26,9 +26,10 @@
             [disabled]="loginForm.invalid">
       Entrar
     </button>
-    <div *ngIf="loginError"
-         class="error">
+    @if(loginError){
+    <div class="error">
       Usuário ou senha inválidos.
     </div>
+    }
   </form>
 </div>

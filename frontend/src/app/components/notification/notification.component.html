@@ -1,8 +1,7 @@
 <div class="notification-container">
 
-
-  <div *ngFor="let notification of notifications; trackBy: trackByNotificationId"
-       class="notification"
+  @for(notification of notifications; track notification.id) {
+  <div class="notification"
        [ngClass]="'notification-' + notification.type">
     <div class="notification-content">
       <span class="notification-icon">{{ getIconForType(notification.type) }}</span>
@@ -14,4 +13,5 @@
       ✕
     </button>
   </div>
+  }
 </div>

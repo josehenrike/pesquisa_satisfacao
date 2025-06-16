@@ -8,8 +8,8 @@
   </div>
 
   <!-- Estado vazio -->
-  <div *ngIf="forms.length === 0"
-       class="empty-state">
+  @if(forms.length === 0){
+  <div class="empty-state">
     <div class="empty-icon">📝</div>
     <h2>Nenhum formulário criado</h2>
     <p>Crie seu primeiro formulário para começar a coletar respostas</p>
@@ -18,10 +18,11 @@
       Criar Primeiro Formulário
     </button>
   </div>
+  }
 
   <!-- Tabela de formulários -->
-  <div *ngIf="forms.length > 0"
-       class="forms-table-container">
+  @if(forms.length > 0){
+  <div class="forms-table-container">
     <table class="forms-table">
       <thead>
         <tr>
@@ -83,10 +84,11 @@
       </tbody>
     </table>
   </div>
+  }
 
   <!-- Modal de visualização do formulário -->
-  <div *ngIf="showFormModal"
-       class="modal-overlay"
+  @if(showFormModal){
+  <div class="modal-overlay"
        (click)="closeModal()">
     <div class="modal-content"
          (click)="$event.stopPropagation()">
@@ -140,10 +142,11 @@
       </div>
     </div>
   </div>
+  }
 
   <!-- Modal de confirmação de exclusão -->
-  <div *ngIf="showDeleteModal"
-       class="modal-overlay"
+  @if(showDeleteModal){
+  <div class="modal-overlay"
        (click)="closeDeleteModal()">
     <div class="modal-content delete-modal"
          (click)="$event.stopPropagation()">
@@ -176,4 +179,5 @@
       </div>
     </div>
   </div>
+  }
 </div>

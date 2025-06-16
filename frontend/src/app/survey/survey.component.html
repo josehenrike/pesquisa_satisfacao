@@ -1,172 +1,184 @@
 <div class="survey-container">
-    <!-- Loading -->
-    <div *ngIf="loading"
-         class="loading-state">
-        <div class="loading-spinner"></div>
-        <p>Carregando formulário...</p>
+  <!-- Loading -->
+  @if(loading){
+  <div class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Carregando formulário...</p>
+  </div>
+  }
+
+  <!-- Form Not Found -->
+  @if(formNotFound){
+  <div class="error-state">
+    <div class="error-icon">❌</div>
+    <h2>Formulário não encontrado</h2>
+    <p>O formulário que você está tentando acessar não existe ou foi removido.</p>
+    <button class="back-btn"
+            (click)="goBack()">
+      Voltar ao início
+    </button>
+  </div>
+  }
+
+  <!-- Success State -->
+  @if(submitted){
+  <div class="success-state">
+    <div class="success-icon">✅</div>
+    <h2>Resposta enviada com sucesso!</h2>
+    <p>Obrigado por participar da nossa pesquisa de satisfação.</p>
+    <p>Suas respostas foram registradas e são muito importantes para nós.</p>
+    <button class="back-btn"
+            (click)="goBack()">
+      Voltar ao início
+    </button>
+  </div>
+  }
+
+  <!-- Survey Form -->
+  @if(form && !loading && !submitted){
+  <div class="survey-form">
+    <div class="form-header">
+      <h1>{{ form.title }}</h1>
+      @if(form.description){
+      <p class="form-description">{{ form.description }}</p>
+      }
+      <div class="form-info">
+        <span class="question-count">{{ form.questions.length }} pergunta(s)</span>
+        <span class="required-info">* Campos obrigatórios</span>
+      </div>
     </div>
 
-    <!-- Form Not Found -->
-    <div *ngIf="formNotFound"
-         class="error-state">
-        <div class="error-icon">❌</div>
-        <h2>Formulário não encontrado</h2>
-        <p>O formulário que você está tentando acessar não existe ou foi removido.</p>
-        <button class="back-btn"
-                (click)="goBack()">
-            Voltar ao início
-        </button>
-    </div>
+    <form (ngSubmit)="submitForm()"
+          #surveyForm="ngForm">
+      <div class="questions-container">
+        <div *ngFor="let question of form.questions; let i = index"
+             class="question-card">
 
-    <!-- Success State -->
-    <div *ngIf="submitted"
-         class="success-state">
-        <div class="success-icon">✅</div>
-        <h2>Resposta enviada com sucesso!</h2>
-        <p>Obrigado por participar da nossa pesquisa de satisfação.</p>
-        <p>Suas respostas foram registradas e são muito importantes para nós.</p>
-        <button class="back-btn"
-                (click)="goBack()">
-            Voltar ao início
-        </button>
-    </div>
-
-    <!-- Survey Form -->
-    <div *ngIf="form && !loading && !submitted"
-         class="survey-form">
-        <div class="form-header">
-            <h1>{{ form.title }}</h1>
-            <p *ngIf="form.description"
-               class="form-description">{{ form.description }}</p>
-            <div class="form-info">
-                <span class="question-count">{{ form.questions.length }} pergunta(s)</span>
-                <span class="required-info">* Campos obrigatórios</span>
+          <div class="question-header">
+            <span class="question-number">{{ i + 1 }}</span>
+            <div class="question-info">
+              <h3>{{ question.title }}</h3>
+              @if(question.required){
+              <span class="required-mark">*</span>
+              }
             </div>
+          </div>
+
+          <!-- Text Input -->
+          @if(question.type === 'text'){
+          <div class="input-group">
+            <input type="text"
+                   [(ngModel)]="responses[question.id]"
+                   [name]="'question_' + question.id"
+                   [required]="question.required"
+                   placeholder="Digite sua resposta...">
+          </div>
+          }
+
+          <!-- Number Input -->
+          @if(question.type === 'number'){
+          <div class="input-group">
+            <input type="number"
+                   [(ngModel)]="responses[question.id]"
+                   [name]="'question_' + question.id"
+                   [required]="question.required"
+                   placeholder="Digite um número...">
+          </div>
+          }
+
+          <!-- Email Input -->
+          @if(question.type === 'email'){
+          <div class="input-group">
+            <input type="email"
+                   [(ngModel)]="responses[question.id]"
+                   [name]="'question_' + question.id"
+                   [required]="question.required"
+                   placeholder="exemplo@email.com">
+          </div>
+          }
+
+          <!-- Textarea -->
+          @if(question.type === 'textarea'){
+          <div class="input-group">
+            <textarea [(ngModel)]="responses[question.id]"
+                      [name]="'question_' + question.id"
+                      [required]="question.required"
+                      rows="4"
+                      placeholder="Digite sua resposta..."></textarea>
+          </div>
+          }
+
+          <!-- Radio (Multiple Choice) -->
+          @if(question.type === 'radio'){
+          <div class="radio-group">
+            <div *ngFor="let option of question.options"
+                 class="radio-option">
+              <input type="radio"
+                     [id]="'q' + question.id + '_' + option"
+                     [name]="'question_' + question.id"
+                     [value]="option"
+                     [(ngModel)]="responses[question.id]"
+                     [required]="question.required">
+              <label [for]="'q' + question.id + '_' + option">{{ option }}</label>
+            </div>
+          </div>
+          }
+
+          <!-- Checkbox (Multiple Selection) -->
+          @if(question.type === 'checkbox'){
+          <div class="checkbox-group">
+            <div *ngFor="let option of question.options"
+                 class="checkbox-option">
+              <input type="checkbox"
+                     [id]="'q' + question.id + '_' + option"
+                     [value]="option"
+                     (change)="onCheckboxChange(question.id, option, $event)">
+              <label [for]="'q' + question.id + '_' + option">{{ option }}</label>
+            </div>
+          </div>
+          }
+
+          <!-- Rating (1-5) -->
+          @if(question.type === 'rating'){
+          <div class="rating-group">
+            <div class="rating-options">
+              <div *ngFor="let rating of [1,2,3,4,5]"
+                   class="rating-option">
+                <input type="radio"
+                       [id]="'q' + question.id + '_' + rating"
+                       [name]="'question_' + question.id"
+                       [value]="rating"
+                       [(ngModel)]="responses[question.id]"
+                       [required]="question.required">
+                <label [for]="'q' + question.id + '_' + rating"
+                       class="rating-label">
+                  <span class="rating-number">{{ rating }}</span>
+                  <span class="rating-stars">{{ '★'.repeat(rating) }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="rating-legend">
+              <span>1 = Muito insatisfeito</span>
+              <span>5 = Muito satisfeito</span>
+            </div>
+          </div>
+          }
         </div>
+      </div>
 
-        <form (ngSubmit)="submitForm()"
-              #surveyForm="ngForm">
-            <div class="questions-container">
-                <div *ngFor="let question of form.questions; let i = index"
-                     class="question-card">
-
-                    <div class="question-header">
-                        <span class="question-number">{{ i + 1 }}</span>
-                        <div class="question-info">
-                            <h3>{{ question.title }}</h3>
-                            <span *ngIf="question.required"
-                                  class="required-mark">*</span>
-                        </div>
-                    </div>
-
-                    <!-- Text Input -->
-                    <div *ngIf="question.type === 'text'"
-                         class="input-group">
-                        <input type="text"
-                               [(ngModel)]="responses[question.id]"
-                               [name]="'question_' + question.id"
-                               [required]="question.required"
-                               placeholder="Digite sua resposta...">
-                    </div>
-
-                    <!-- Number Input -->
-                    <div *ngIf="question.type === 'number'"
-                         class="input-group">
-                        <input type="number"
-                               [(ngModel)]="responses[question.id]"
-                               [name]="'question_' + question.id"
-                               [required]="question.required"
-                               placeholder="Digite um número...">
-                    </div>
-
-                    <!-- Email Input -->
-                    <div *ngIf="question.type === 'email'"
-                         class="input-group">
-                        <input type="email"
-                               [(ngModel)]="responses[question.id]"
-                               [name]="'question_' + question.id"
-                               [required]="question.required"
-                               placeholder="exemplo@email.com">
-                    </div>
-
-                    <!-- Textarea -->
-                    <div *ngIf="question.type === 'textarea'"
-                         class="input-group">
-                        <textarea [(ngModel)]="responses[question.id]"
-                                  [name]="'question_' + question.id"
-                                  [required]="question.required"
-                                  rows="4"
-                                  placeholder="Digite sua resposta..."></textarea>
-                    </div>
-
-                    <!-- Radio (Multiple Choice) -->
-                    <div *ngIf="question.type === 'radio'"
-                         class="radio-group">
-                        <div *ngFor="let option of question.options"
-                             class="radio-option">
-                            <input type="radio"
-                                   [id]="'q' + question.id + '_' + option"
-                                   [name]="'question_' + question.id"
-                                   [value]="option"
-                                   [(ngModel)]="responses[question.id]"
-                                   [required]="question.required">
-                            <label [for]="'q' + question.id + '_' + option">{{ option }}</label>
-                        </div>
-                    </div>
-
-                    <!-- Checkbox (Multiple Selection) -->
-                    <div *ngIf="question.type === 'checkbox'"
-                         class="checkbox-group">
-                        <div *ngFor="let option of question.options"
-                             class="checkbox-option">
-                            <input type="checkbox"
-                                   [id]="'q' + question.id + '_' + option"
-                                   [value]="option"
-                                   (change)="onCheckboxChange(question.id, option, $event)">
-                            <label [for]="'q' + question.id + '_' + option">{{ option }}</label>
-                        </div>
-                    </div>
-
-                    <!-- Rating (1-5) -->
-                    <div *ngIf="question.type === 'rating'"
-                         class="rating-group">
-                        <div class="rating-options">
-                            <div *ngFor="let rating of [1,2,3,4,5]"
-                                 class="rating-option">
-                                <input type="radio"
-                                       [id]="'q' + question.id + '_' + rating"
-                                       [name]="'question_' + question.id"
-                                       [value]="rating"
-                                       [(ngModel)]="responses[question.id]"
-                                       [required]="question.required">
-                                <label [for]="'q' + question.id + '_' + rating"
-                                       class="rating-label">
-                                    <span class="rating-number">{{ rating }}</span>
-                                    <span class="rating-stars">{{ '★'.repeat(rating) }}</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="rating-legend">
-                            <span>1 = Muito insatisfeito</span>
-                            <span>5 = Muito satisfeito</span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="button"
-                        class="back-btn"
-                        (click)="goBack()">
-                    Cancelar
-                </button>
-                <button type="submit"
-                        class="submit-btn"
-                        [disabled]="!isFormValid()">
-                    Enviar Respostas
-                </button>
-            </div>
-        </form>
-    </div>
+      <div class="form-actions">
+        <button type="button"
+                class="back-btn"
+                (click)="goBack()">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="submit-btn"
+                [disabled]="!isFormValid()">
+          Enviar Respostas
+        </button>
+      </div>
+    </form>
+  </div>
+  }
 </div>

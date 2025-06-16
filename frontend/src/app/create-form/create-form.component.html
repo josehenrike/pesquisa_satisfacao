@@ -38,11 +38,12 @@
         </button>
       </div>
 
-      <div *ngIf="questions.length === 0"
-           class="empty-state">
+      @if(questions.length === 0) {
+      <div class="empty-state">
         <p>Nenhuma pergunta adicionada ainda.</p>
         <p>Clique em "Adicionar Pergunta" para começar.</p>
       </div>
+      }
 
       <div *ngFor="let question of questions; let i = index; trackBy: trackByQuestionIndex"
            class="question-card">
@@ -68,10 +69,11 @@
             <div class="input-group">
               <label>Tipo de Resposta</label>
               <select [(ngModel)]="question.type">
-                <option *ngFor="let type of questionTypes"
-                        [value]="type.value">
+                @for(type of questionTypes; track type.value) {
+                <option [value]="type.value">
                   {{ type.label }}
                 </option>
+                }
               </select>
             </div>
 
@@ -85,8 +87,8 @@
           </div>
 
           <!-- Opções para múltipla escolha -->
-          <div *ngIf="question.type === 'radio' || question.type === 'checkbox'"
-               class="options-section">
+          @if(question.type === 'radio' || question.type === 'checkbox'){
+          <div class="options-section">
             <label>Opções de Resposta</label>
 
             <div *ngFor="let option of question.options; let j = index; trackBy: trackByOptionIndex"
@@ -108,6 +110,7 @@
               + Adicionar Opção
             </button>
           </div>
+          }
         </div>
       </div>
     </div>
