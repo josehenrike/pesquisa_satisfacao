@@ -15,7 +15,6 @@ export class DashboardComponent implements OnInit {
   adminUser = 'Admin';
   isMobile = false;
 
-  // Touch gesture variables
   private touchStartX = 0;
   private touchStartY = 0;
   private touchCurrentX = 0;
@@ -53,7 +52,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Detectar se é mobile
     this.checkMobile();
 
     // Escutar mudanças de rota para atualizar o menu ativo
@@ -145,11 +143,9 @@ export class DashboardComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.isMobile = window.innerWidth <= 768;
 
-      // No mobile, iniciar com sidebar fechada
       if (this.isMobile) {
         this.sidebarOpen = false;
       } else {
-        // No desktop, iniciar com sidebar aberta
         this.sidebarOpen = true;
       }
     }
@@ -159,7 +155,6 @@ export class DashboardComponent implements OnInit {
     this.sidebarOpen = false;
   }
 
-  // Touch gesture methods para swipe
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.touches[0].clientX;
     this.touchStartY = event.touches[0].clientY;
@@ -182,13 +177,10 @@ export class DashboardComponent implements OnInit {
     const deltaX = this.touchCurrentX - this.touchStartX;
     const deltaY = Math.abs(this.touchCurrentY - this.touchStartY);
 
-    // Verificar se foi um swipe horizontal (não vertical)
     if (deltaY < 100) {
-      // Swipe para direita (fechar sidebar)
       if (deltaX > 50 && this.sidebarOpen) {
         this.closeSidebar();
       }
-      // Swipe para esquerda (abrir sidebar) - apenas se começou da borda esquerda
       else if (deltaX < -50 && !this.sidebarOpen && this.touchStartX < 50) {
         this.sidebarOpen = true;
       }
@@ -196,7 +188,6 @@ export class DashboardComponent implements OnInit {
   }
 
   createNewForm() {
-    // Navegar para a rota de criação de formulário
     this.router.navigate(['/dashboard', 'create-form']);
   }
 }

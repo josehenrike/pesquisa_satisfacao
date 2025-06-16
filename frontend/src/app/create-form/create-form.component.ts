@@ -90,7 +90,6 @@ export class CreateFormComponent {
       next: (response) => {
         console.log('Formulário salvo:', response);
         this.notificationService.success('Formulário criado com sucesso!');
-        // Voltar para o dashboard principal
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
@@ -101,7 +100,6 @@ export class CreateFormComponent {
   }
 
   cancel() {
-    // Voltar para o dashboard principal
     this.router.navigate(['/dashboard']);
   }
 }

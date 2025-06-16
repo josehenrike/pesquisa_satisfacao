@@ -17,11 +17,9 @@ export class FormsComponent implements OnInit {
   showFormModal = false;
   showDropdownId: number | null = null;
 
-  // Modal de confirmação de exclusão
   showDeleteModal = false;
   formToDelete: FormularioDTO | null = null;
 
-  // Posição do dropdown
   dropdownPosition = { top: 0, left: 0 };
 
   constructor(
@@ -37,7 +35,6 @@ export class FormsComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
-    // Fecha o dropdown se clicar fora dele
     this.showDropdownId = null;
   }
 
@@ -79,7 +76,7 @@ export class FormsComponent implements OnInit {
     // Posicionar o dropdown logo abaixo do botão
     this.dropdownPosition = {
       top: rect.bottom + window.scrollY,
-      left: rect.right - 150 + window.scrollX // 150px é a largura mínima do dropdown
+      left: rect.right - 150 + window.scrollX
     };
 
     // Verificar se o dropdown vai sair da tela e ajustar
@@ -129,7 +126,6 @@ export class FormsComponent implements OnInit {
     navigator.clipboard.writeText(formLink).then(() => {
       this.notificationService.success('Link copiado para a área de transferência!');
     }).catch(() => {
-      // Fallback para browsers mais antigos
       const textArea = document.createElement('textarea');
       textArea.value = formLink;
       document.body.appendChild(textArea);
