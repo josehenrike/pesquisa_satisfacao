@@ -1,22 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormService, FormularioDTO, RespostaDetalhadaDTO } from '../services/form.service';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-responses',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './responses.component.html',
   styleUrl: './responses.component.scss'
 })
 export class ResponsesComponent implements OnInit {
   formularios: FormularioDTO[] = [];
   respostas: RespostaDetalhadaDTO[] = [];
+  filteredRespostas: RespostaDetalhadaDTO[] = [];
   selectedResposta: RespostaDetalhadaDTO | null = null;
   selectedFormulario: FormularioDTO | null = null;
   showResponseModal = false;
   loading = true;
+  searchTerm = '';
 
   constructor(
     private formService: FormService,
@@ -48,6 +51,7 @@ export class ResponsesComponent implements OnInit {
     this.formService.getRespostas().subscribe({
       next: (respostas) => {
         this.respostas = respostas;
+        this.filteredRespostas = respostas;
         this.loading = false;
       },
       error: (error) => {
@@ -122,5 +126,26 @@ export class ResponsesComponent implements OnInit {
   getUniqueFormularios(): number[] {
     const ids = this.respostas.map(r => r.formularioId);
     return [...new Set(ids)];
+  }
+
+  filterResponses() {
+    if (!this.searchTerm.trim()) {
+      this.filteredRespostas = this.respostas;
+      return;
+    }
+
+    const search = this.searchTerm.toLowerCase().trim();
+    this.filteredRespostas = this.respostas.filter(resposta => {
+      return (
+        resposta.formularioTitulo.toLowerCase().includes(search) ||
+        resposta.clienteNome.toLowerCase().includes(search) ||
+        resposta.clienteEmail.toLowerCase().includes(search)
+      );
+    });
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.filteredRespostas = this.respostas;
   }
 }

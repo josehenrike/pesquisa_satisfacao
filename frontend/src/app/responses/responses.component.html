@@ -7,7 +7,7 @@
         <span class="stat-label">Formulários</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number">{{ respostas.length }}</span>
+        <span class="stat-number">{{ filteredRespostas.length }}</span>
         <span class="stat-label">Respostas</span>
       </div>
     </div>
@@ -21,7 +21,33 @@
   </div>
   }
 
-  <!-- Estado vazio -->
+  <!-- Barra de pesquisa -->
+  @if(!loading && respostas.length > 0){
+  <div class="search-container">
+    <div class="search-box">
+      <div class="search-icon">🔍</div>
+      <input type="text"
+             placeholder="Pesquisar por formulário, participante ou email..."
+             class="search-input"
+             [(ngModel)]="searchTerm"
+             (input)="filterResponses()">
+      <button class="clear-search"
+              *ngIf="searchTerm"
+              (click)="clearSearch()">✕</button>
+    </div>
+  </div>
+
+  <!-- Estado vazio para pesquisa -->
+  @if(filteredRespostas.length === 0 && searchTerm){
+  <div class="empty-state">
+    <div class="empty-icon">🔍</div>
+    <h2>Nenhuma resposta encontrada</h2>
+    <p>Tente ajustar os termos de pesquisa</p>
+  </div>
+  }
+  }
+
+  <!-- Estado vazio inicial -->
   @if(!loading && respostas.length === 0){
   <div class="empty-state">
     <div class="empty-icon">📊</div>
@@ -31,8 +57,9 @@
   }
 
   <!-- Tabela de respostas -->
-  @if(!loading && respostas.length > 0){
+  @if(!loading && filteredRespostas.length > 0){
   <div class="responses-table-container">
+    <!-- Header fixo da tabela -->
     <table class="responses-table">
       <thead>
         <tr>
@@ -43,30 +70,36 @@
           <th>Ações</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let resposta of respostas"
-            class="response-row">
-          <td class="form-title">
-            <strong>{{ resposta.formularioTitulo }}</strong>
-          </td>
-          <td class="participant-name">
-            {{ resposta.clienteNome }}
-          </td>
-          <td class="participant-email">
-            {{ resposta.clienteEmail }}
-          </td>
-          <td class="response-date">
-            {{ formatDate(resposta.dataResposta) }}
-          </td>
-          <td class="response-actions">
-            <button class="view-btn"
-                    (click)="viewResponse(resposta)">
-              👁️ Ver Respostas
-            </button>
-          </td>
-        </tr>
-      </tbody>
     </table>
+
+    <!-- Conteúdo com scroll -->
+    <div class="table-scroll-wrapper">
+      <table class="responses-table">
+        <tbody>
+          <tr *ngFor="let resposta of filteredRespostas"
+              class="response-row">
+            <td class="form-title">
+              <strong>{{ resposta.formularioTitulo }}</strong>
+            </td>
+            <td class="participant-name">
+              {{ resposta.clienteNome }}
+            </td>
+            <td class="participant-email">
+              {{ resposta.clienteEmail }}
+            </td>
+            <td class="response-date">
+              {{ formatDate(resposta.dataResposta) }}
+            </td>
+            <td class="response-actions">
+              <button class="view-btn"
+                      (click)="viewResponse(resposta)">
+                👁️ Ver Respostas
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   }
 
