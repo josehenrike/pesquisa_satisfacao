@@ -58,11 +58,9 @@ export class DashboardComponent implements OnInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateActiveMenuItem(event.url);
-        // Fechar sidebar no mobile após navegação
         if (this.isMobile) {
           this.sidebarOpen = false;
         }
-        // Atualizar estatísticas sempre que navegar para qualquer rota do dashboard
         this.updateStats();
       }
     });
@@ -93,22 +91,19 @@ export class DashboardComponent implements OnInit {
   }
 
   private updateActiveMenuItem(url: string) {
-    // Resetar todos os itens
     this.menuItems.forEach(item => item.active = false);
 
-    // Determinar qual item deve estar ativo baseado na URL
     if (url === '/dashboard' || url === '/dashboard/') {
       this.menuItems[0].active = true; // Dashboard
-    } else if (url.includes('/dashboard/create-form')) {
+    } else if (url.includes('/create-form')) {
       this.menuItems[1].active = true; // Criar Formulário
-    } else if (url.includes('/dashboard/forms')) {
+    } else if (url.includes('/forms')) {
       this.menuItems[2].active = true; // Formulários
-    } else if (url.includes('/dashboard/responses')) {
+    } else if (url.includes('/responses')) {
       this.menuItems[3].active = true; // Respostas
-    } else if (url.includes('/dashboard/settings')) {
+    } else if (url.includes('/settings')) {
       this.menuItems[4].active = true; // Configurações
     } else {
-      // Default para Dashboard se não encontrar correspondência
       this.menuItems[0].active = true;
     }
   }
@@ -118,12 +113,9 @@ export class DashboardComponent implements OnInit {
   }
 
   setActiveMenuItem(item: any) {
-    // Navegar para a rota do item
     if (item.route === '') {
-      // Para o dashboard principal, navegar para /dashboard sem rota filha
       this.router.navigate(['/dashboard']);
     } else {
-      // Para outras rotas, navegar para a rota filha
       this.router.navigate(['/dashboard', item.route]);
     }
   }

@@ -22,6 +22,8 @@ export class FormsComponent implements OnInit {
 
   dropdownPosition = { top: 0, left: 0 };
 
+  //#region Constructor
+
   constructor(
     private formService: FormService,
     private router: Router,
@@ -29,39 +31,24 @@ export class FormsComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
+  //#endregion
+
+  //#region Lifecycle Hooks
+
   ngOnInit() {
     this.loadForms();
   }
 
+  //#endregion
+
+  //#region Public Methods
+
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
+  public onDocumentClick(event: Event) {
     this.showDropdownId = null;
   }
 
-  loadForms() {
-    this.formService.getForms().subscribe({
-      next: (forms) => {
-        this.forms = forms;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar formulários:', error);
-        this.notificationService.error('Erro ao carregar formulários');
-      }
-    });
-  }
-
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
-
-  toggleDropdown(formId: number, event: Event) {
+  public toggleDropdown(formId: number, event: Event) {
     event.stopPropagation();
 
     if (this.showDropdownId === formId) {
@@ -92,30 +79,23 @@ export class FormsComponent implements OnInit {
     this.showDropdownId = formId;
   }
 
-  getDropdownStyle() {
-    return {
-      'top.px': this.dropdownPosition.top,
-      'left.px': this.dropdownPosition.left
-    };
-  }
-
-  viewForm(form: FormularioDTO) {
+  public viewForm(form: FormularioDTO) {
     this.selectedForm = form;
     this.showFormModal = true;
     this.showDropdownId = null;
   }
 
-  closeModal() {
+  public closeModal() {
     this.showFormModal = false;
     this.selectedForm = null;
   }
 
-  closeDeleteModal() {
+  public closeDeleteModal() {
     this.showDeleteModal = false;
     this.formToDelete = null;
   }
 
-  copyFormLink(form: FormularioDTO) {
+  public copyFormLink(form: FormularioDTO) {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -138,13 +118,13 @@ export class FormsComponent implements OnInit {
     this.showDropdownId = null;
   }
 
-  deleteForm(form: FormularioDTO) {
+  public deleteForm(form: FormularioDTO) {
     this.formToDelete = form;
     this.showDeleteModal = true;
     this.showDropdownId = null;
   }
 
-  confirmDeleteForm() {
+  public confirmDeleteForm() {
     if (this.formToDelete) {
       this.formService.deleteForm(this.formToDelete.id).subscribe({
         next: () => {
@@ -160,8 +140,46 @@ export class FormsComponent implements OnInit {
     }
   }
 
-  createNewForm() {
+  public createNewForm() {
     this.router.navigate(['/dashboard/create-form']);
+  }
+
+  //#endregion
+
+  //#region Private Methods
+
+  private loadForms() {
+    this.formService.getForms().subscribe({
+      next: (forms) => {
+        this.forms = forms;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar formulários:', error);
+        this.notificationService.error('Erro ao carregar formulários');
+      }
+    });
+  }
+
+  //#endregion
+
+  //#region Public Functions
+
+  public formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  public getDropdownStyle() {
+    return {
+      'top.px': this.dropdownPosition.top,
+      'left.px': this.dropdownPosition.left
+    };
   }
 
   getQuestionTypeLabel(type: string): string {
@@ -176,4 +194,7 @@ export class FormsComponent implements OnInit {
     };
     return types[type as keyof typeof types] || type;
   }
+
+  //#endregion
+
 }

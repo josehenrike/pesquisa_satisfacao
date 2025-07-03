@@ -15,16 +15,18 @@ export class LoginComponent {
   password = '';
   loginError = false;
 
-  // Usuário e senha fixos para o admin
-  private readonly adminUser = 'admin';
-  private readonly adminPass = 'admin123';
+  //#region Constructor
 
   constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
-  login() {
+  //#endregion
+
+  //#region Public Functions
+
+  public login() {
     if (this.username === this.adminUser && this.password === this.adminPass) {
       this.loginError = false;
 
@@ -38,4 +40,13 @@ export class LoginComponent {
       this.loginError = true;
     }
   }
+
+  //#endregion
+
+  //#region Private Properties
+
+  private readonly adminUser = 'admin';
+  private readonly adminPass = 'admin123';
+
+  //#endregion
 }
