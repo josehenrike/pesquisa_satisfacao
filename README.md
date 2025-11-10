@@ -57,54 +57,6 @@ Sistema completo de criação e gerenciamento de formulários de pesquisa com An
 - PostgreSQL 13+
 - Git
 
-### 1. Configuração do Banco de Dados
-
-```bash
-# Criar banco de dados no PostgreSQL
-createdb pesquisa_satisfacao
-
-# Configurar credenciais no backend/appsettings.json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=pesquisa_satisfacao;Username=seu_usuario;Password=sua_senha"
-  }
-}
-```
-
-### 2. Backend (.NET Core)
-
-```bash
-# Navegar para o diretório do backend
-cd backend
-
-# Restaurar dependências
-dotnet restore
-
-# Executar migrations
-dotnet ef database update
-
-# Executar a aplicação
-dotnet run
-```
-
-A API estará disponível em: `http://localhost:5010`
-Swagger UI: `http://localhost:5010/swagger`
-
-### 3. Frontend (Angular)
-
-```bash
-# Navegar para o diretório do frontend
-cd frontend
-
-# Instalar dependências
-npm install
-
-# Executar a aplicação
-npm start
-```
-
-A aplicação estará disponível em: `http://localhost:4200`
-
 ## 📖 Como Usar
 
 ### 1. Acesso ao Sistema
@@ -192,18 +144,6 @@ O sistema foi desenvolvido com foco em responsividade:
 - **CORS**: Configurado para desenvolvimento
 - **Swagger**: Documentação automática da API
 
-## 🚀 Deploy
-
-### Backend
-1. Configurar string de conexão para produção
-2. Executar `dotnet publish -c Release`
-3. Deploy em IIS, Azure, ou Docker
-
-### Frontend
-1. Executar `ng build --configuration production`
-2. Deploy da pasta `dist/` em servidor web
-3. Configurar proxy para APIs se necessário
-
 ## 📝 Próximas Melhorias
 
 - [ ] Autenticação JWT
@@ -213,15 +153,3 @@ O sistema foi desenvolvido com foco em responsividade:
 - [ ] Análise de dados com gráficos
 - [ ] Notifications push
 - [ ] API de webhooks
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes. 
